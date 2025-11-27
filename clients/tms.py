@@ -70,8 +70,9 @@ class TMS:
         url = f"{self._base_url}/api2/v3/users"
         return self._api_client.post_request(url, payload=user)
 
-    def update_target(self, project, file_to_import, headers):
+    def update_target(self, project, file_to_import, headers, unconfirm_changed_segments: bool):
         url = f"{self._base_url}/api2/v1/projects/{project['uid']}/jobs/target"
+        url = self.combine_url_with_query_params(url, {"unconfirmChangedSegments": str(unconfirm_changed_segments).lower()})
 
         return self._api_client.post_content(url=url, request_headers=headers, file=file_to_import)
     

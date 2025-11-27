@@ -36,6 +36,13 @@ python cli.py import -s <source_language> -f <folder_path> -p <project_uid>
 ##### Update Command
 The `update` command is used to update target translations for the files in a project.
 ```
-python cli.py update --source-language <source_language> --folder <folder_path> --project <project_uid>
-python cli.py update -s <source_language> -f <folder_path> -p <project_uid>
+python cli.py update --source-language <source_language> --folder <folder_path> --project <project_uid> --unconfirm-changed-segments <true|false>
+python cli.py update -s <source_language> -f <folder_path> -p <project_uid> -u <true|false>
 ```
+
+- `--unconfirm-changed-segments` (required): passes the `unconfirmChangedSegments` flag to the Phrase TMS API `POST /api2/v1/projects/{projectUid}/jobs/target`. Use `true` to unconfirm segments changed by the update; use `false` to keep confirmations.
+
+###### Update Cooldown & Confirmation Behavior
+Phrase TMS enforces a cooldown between consecutive target updates for the same job part (error code 429: *Time between update target calls must be 30 minutes*). If you receive this error, wait ~30 minutes before retrying.
+
+When `--unconfirm-changed-segments true` is used, the script also sets `propagateConfirmedToTm` to `false` internally to avoid the API restriction that both cannot be `true` simultaneously. This ensures changed segments become unconfirmed and are not propagated to TM in the same request.
